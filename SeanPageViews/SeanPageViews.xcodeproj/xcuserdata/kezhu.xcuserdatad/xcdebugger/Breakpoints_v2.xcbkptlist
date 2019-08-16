@@ -10,12 +10,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SeanPageViews/SeanPageViews/SeanPageTitleView.m"
-            timestampString = "587558502.460151"
+            timestampString = "587636440.296428"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "113"
-            endingLineNumber = "113"
-            landmarkName = "-setLabelLocation"
+            startingLineNumber = "228"
+            endingLineNumber = "228"
+            landmarkName = "-setTitleWithProgress:sourceIndex:targetIndex:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

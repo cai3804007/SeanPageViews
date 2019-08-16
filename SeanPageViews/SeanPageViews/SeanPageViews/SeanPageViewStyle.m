@@ -20,8 +20,8 @@
 
 - (void)initStyle{
     _isScrollEnable = NO;
-    _normalColor = RGB_COLOR(0, 0, 0);
-    _selectedColor = RGB_COLOR(255, 127, 0);
+    _normalColor = RGB_COLOR(153, 153, 153);
+    _selectedColor = RGB_COLOR(96, 195, 80);
     _font = [UIFont systemFontOfSize:15];
     _titleMargin = 20;
     _titleHeight = 44;

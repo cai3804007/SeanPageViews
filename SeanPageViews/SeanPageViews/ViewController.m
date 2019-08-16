@@ -19,8 +19,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    NSArray *titles = @[@"热门",@"爆笑",@"看看谁最美呢你看一看啊",@"最热",@"最新"];
+    NSArray *titles = @[@"热agg门",@"爆1dgdsg笑",@"11afgag1",@"最afgf热",@"最afg",@"最好afg",@"最凉afg",@"最1111afg"];
     SeanPageViewStyle *style = [[SeanPageViewStyle alloc]init];
+    style.scaleRange = 1.2;
+    style.isNeedScale = YES;
     style.isScrollEnable = YES;
     style.isShowBottomLine = YES;
     style.isShowCover = YES;
@@ -29,17 +31,32 @@
     
     NSMutableArray *vcs = [NSMutableArray new];
     OneViewController *one = [[OneViewController alloc]init];
+    
     TwoViewController *two = [[TwoViewController alloc]init];
     ThreeViewController *three = [[ThreeViewController alloc]init];
     
     ThreeViewController *four = [[ThreeViewController alloc]init];
     
     TwoViewController *five = [[TwoViewController alloc]init];
+     TwoViewController *six = [[TwoViewController alloc]init];
+     TwoViewController *seven = [[TwoViewController alloc]init];
+     TwoViewController *eight = [[TwoViewController alloc]init];
+    one.view.tag = 1;
+    two.view.tag = 2;
+    three.view.tag = 3;
+    four.view.tag = 4;
+    five.view.tag = 5;
+     six.view.tag = 6;
+     seven.view.tag = 7;
+     eight.view.tag = 8;
     [vcs addObject:one];
     [vcs addObject:two];
     [vcs addObject:three];
     [vcs addObject:four];
     [vcs addObject:five];
+    [vcs addObject:six];
+    [vcs addObject:seven];
+    [vcs addObject:eight];
     
     SeanPageView *page = [[SeanPageView alloc]initWithFrame:pageViewFrame style:style childVcs:vcs parentVc:self titles:titles];
     [self.view addSubview:page];

@@ -42,7 +42,7 @@
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell"];
-    cell.textLabel.text = [NSString stringWithFormat:@"这是第%ld页面,第%ld行",tableView.tag,indexPath.row];
+    cell.textLabel.text = [NSString stringWithFormat:@"这是第%ld页面,第%ld行",self.view.tag,indexPath.row];
     return cell;
 }
 

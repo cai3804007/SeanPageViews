@@ -69,6 +69,7 @@
     
     [self addSubview:_scrollView];
     [self addSubview:_bottomLine];
+    [_scrollView addSubview:_coverView];
     
 }
 
@@ -152,17 +153,27 @@
 
 
 - (void)titleLabelClick:(UITapGestureRecognizer *)tap{
+       // 0.获取点击的label
     UILabel *currentLabel = (UILabel *)[tap view];
+      // 1.如果和之前是同一个 直接return
     if (self.currentIndex == currentLabel.tag) {return;}
+     // 2.获取之前的label
     UILabel *oldLabel = self.titleLabels[self.currentIndex];
     
+    // 3.切换颜色
     oldLabel.textColor = self.style.normalColor;
     currentLabel.textColor = self.style.selectedColor;
+    
+      // 4.保存下标
     self.currentIndex = currentLabel.tag;
     
+       // 5.通知代理
     [self.delegate titleViewSelectedIndex:_currentIndex titleView:self];
+    
+      // 6. 设置居中显示
     [self contenViewDidEndScroll];
     
+    // 7.调整线的显示
     if (self.style.isShowBottomLine) {
         CGRect frame = self.bottomLine.frame;
         frame.origin.x = currentLabel.frame.origin.x;
@@ -172,11 +183,13 @@
         }];
     }
     
+    // 8.调整比例
     if (self.style.isNeedScale) {
         oldLabel.transform = CGAffineTransformIdentity;
         currentLabel.transform = CGAffineTransformMakeScale(self.style.scaleRange, self.style.scaleRange);
     }
     
+    // 9.遮盖物调整
     if (self.style.isShowCover) {
         CGRect coverFrame = self.coverView.frame;
         coverFrame.size.width = currentLabel.frame.size.width + self.style.coverMargin * 2;
@@ -189,37 +202,41 @@
 }
 
 - (void)setTitleWithProgress:(CGFloat)progress sourceIndex:(NSInteger)sourceIndex targetIndex:(NSInteger)targetIndex{
+     // 1.取出sourceIndex和targetIndex
     UILabel *sourceLabel = self.titleLabels[sourceIndex];
     UILabel *targetLabel = self.titleLabels[targetIndex];
+    // 2.颜色的渐变
+    // 2.1 取出变化的范围
     NSArray<NSNumber *> *colorDelta = [self getRGBDeltaWithFirstColor:self.style.selectedColor secondColor:self.style.normalColor];
-
+ // 3.2 变化sourceLabel
     sourceLabel.textColor = [[UIColor alloc]initWithRed:self.selectedRGB[0].floatValue - colorDelta[0].floatValue *progress green:self.selectedRGB[1].floatValue - colorDelta[1].floatValue *progress blue:self.selectedRGB[2].floatValue - colorDelta[2].floatValue *progress alpha:1.0];
-    
-    targetLabel.textColor = [[UIColor alloc]initWithRed:self.selectedRGB[0].floatValue + colorDelta[0].floatValue *progress green:self.selectedRGB[1].floatValue + colorDelta[1].floatValue *progress blue:self.selectedRGB[2].floatValue + colorDelta[2].floatValue *progress alpha:1.0];
-    
+     // 3.2 变化targetIndex
+    targetLabel.textColor = [[UIColor alloc]initWithRed:self.normalRGB[0].floatValue + colorDelta[0].floatValue *progress green:self.normalRGB[1].floatValue + colorDelta[1].floatValue *progress blue:self.normalRGB[2].floatValue + colorDelta[2].floatValue *progress alpha:1.0];
+     // 4.记录最新的index
     self.currentIndex = targetIndex;
     
     CGFloat moveTotalX = targetLabel.frame.origin.x - sourceLabel.frame.origin.x;
     CGFloat moveTotalW = targetLabel.frame.size.width - sourceLabel.frame.size.width;
+    // 5.计算滚动范围差值
     if (self.style.isShowBottomLine) {
         CGRect bottomFrame = self.bottomLine.frame;
         bottomFrame.size.width = sourceLabel.frame.size.width + moveTotalW * progress;
         bottomFrame.origin.x = sourceLabel.frame.origin.x + moveTotalX * progress;
         self.bottomLine.frame = bottomFrame;
     }
-    
+    // 6.放大的比例
     if (self.style.isNeedScale) {
         CGFloat scaleDelta = (self.style.scaleRange - 1.0) * progress;
         sourceLabel.transform = CGAffineTransformMakeScale(self.style.scaleRange - scaleDelta * progress, self.style.scaleRange - scaleDelta * progress);
-        targetLabel.transform = CGAffineTransformMakeScale(self.style.scaleRange + scaleDelta * progress, self.style.scaleRange + scaleDelta * progress);
+        targetLabel.transform = CGAffineTransformMakeScale(1.0 + scaleDelta * progress, 1.0 + scaleDelta * progress);
     }
-    
+    // 7.计算遮盖物移动
     if (self.style.isShowCover) {
         CGRect coverFrame = self.coverView.frame;
         coverFrame.size.width = self.style.isScrollEnable ? (sourceLabel.frame.size.width + 2 * self.style.coverMargin + moveTotalW * progress) : (sourceLabel.frame.size.width + moveTotalW * progress);
         coverFrame.origin.x = self.style.isScrollEnable ? (sourceLabel.frame.origin.x - self.style.coverMargin + moveTotalX * progress) : (sourceLabel.frame.origin.x + moveTotalX * progress);
+        self.coverView.frame = coverFrame;
     }
-    
 }
 
 - (NSArray<NSNumber *> *)getRGBWithColor:(UIColor *)color{
@@ -239,10 +256,14 @@
 
 
 - (void)contenViewDidEndScroll{
+     // 0.如果不需要滚动
     if (!self.style.isScrollEnable) {
         return;
     }
+      // 1.获取目标的label
     UILabel *targetLabel = self.titleLabels[self.currentIndex];
+    
+        // 2.计算和中间位置的偏移量
     CGFloat offSetX = targetLabel.center.x - self.bounds.size.width * 0.5;
     if (offSetX < 0) {
         offSetX = 0;
@@ -253,6 +274,15 @@
         offSetX = maxOffSet;
     }
     [self.scrollView setContentOffset:CGPointMake(offSetX, 0) animated:YES];
+    
+//    for (UILabel *label  in self.titleLabels) {
+//        if ([label isEqual:targetLabel]) {
+//            continue;
+//        }else{
+//            label.transform = CGAffineTransformIdentity;
+//            label.textColor = self.style.normalColor;
+//        }
+//    }
 }
 
 

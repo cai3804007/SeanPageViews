@@ -23,6 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface SeanPageContentView : UIView
 @property (nonatomic,weak) id<SeanPageContentViewDelegate> delegate;
 - (instancetype)initWithFrame:(CGRect)frame childVcs:(NSArray<UIViewController *> *)childVcs parentVc:(UIViewController *)parentVc;
+//移动到指定位置
 - (void)setCurrentIndex:(NSInteger)currentIndex;
 @end
 

@@ -45,14 +45,6 @@
 }
 
 
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
 #pragma SeanPageContentViewDelegate
 -(void)contentViewDidScrollWithProgress:(CGFloat)progress sourceIndex:(NSInteger)sourceIndex targetIndex:(NSInteger)targetIndex contentView:(SeanPageContentView *)contentView{
     [self.titleView setTitleWithProgress:progress sourceIndex:sourceIndex targetIndex:targetIndex];
