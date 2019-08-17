@@ -10,8 +10,15 @@
 #import "SeanPageViewStyle.h"
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol SeanPageViewDelegate <NSObject>
+
+- (UITableView *)listScrollView;
+
+@end
+
+
 @interface SeanPageView : UIView
--(instancetype)initWithFrame:(CGRect)frame style:(SeanPageViewStyle *)style childVcs:(NSArray<UIViewController *>*)childVcs parentVc:(UIViewController *)parentVc titles:(NSArray *)titles;
+-(instancetype)initWithFrame:(CGRect)frame style:(SeanPageViewStyle *)style childVcs:(NSArray<UIViewController<SeanPageViewDelegate> *>*)childVcs parentVc:(UIViewController *)parentVc titles:(NSArray *)titles headerView:(UIView *)headerView;
 @end
 
 NS_ASSUME_NONNULL_END

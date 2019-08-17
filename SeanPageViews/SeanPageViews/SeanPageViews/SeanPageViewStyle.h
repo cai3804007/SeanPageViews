@@ -42,6 +42,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,assign) CGFloat coverH;
 /***设置圆角大小***/
 @property (nonatomic,assign) CGFloat coverRadius;
+/***是否有headerView***/
+@property (nonatomic,assign) BOOL isNeedHeader;
+
+@property (nonatomic,assign) CGFloat refreshHeight;
+
 @end
 
 NS_ASSUME_NONNULL_END

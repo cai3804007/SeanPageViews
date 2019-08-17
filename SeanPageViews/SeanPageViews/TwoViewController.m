@@ -7,8 +7,9 @@
 //
 
 #import "TwoViewController.h"
-
-@interface TwoViewController ()<UITableViewDelegate,UITableViewDataSource>
+#import "SeanPageView.h"
+#import "MJRefresh.h"
+@interface TwoViewController ()<UITableViewDelegate,UITableViewDataSource,SeanPageViewDelegate>
 @property (nonatomic,strong) UITableView *tableView;
 @property (nonatomic,copy) void (^scrollCallback)(UIScrollView *scroll);
 @end
@@ -20,6 +21,14 @@
     // Do any additional setup after loading the view.
     self.tableView = [self tableViewWithTag:2 registerClass:[UITableViewCell class] cellReuseidentifier:@"cell"];
     [self.view addSubview:self.tableView];
+    // 刷新
+    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingTarget:self refreshingAction:@selector(header)];
+}
+
+- (void)header{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.tableView.mj_header endRefreshing];
+    });
 }
 // MARK: 统一tableView出口
 - (UITableView *)tableViewWithTag:(NSInteger)tag registerClass:(nullable Class)cellClass cellReuseidentifier:(NSString *)identifier {
@@ -61,7 +70,7 @@
  返回listView内部持有的UIScrollView或UITableView或UICollectionView
  主要用于mainTableView已经显示了header，listView的contentOffset需要重置时，内部需要访问到外部传入进来的listView内的scrollView
  */
-- (UIScrollView *)listScrollView {
+- (UITableView *)listScrollView {
     return self.tableView;
 }
 

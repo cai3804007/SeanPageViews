@@ -11,6 +11,8 @@
 #import "OneViewController.h"
 #import "TwoViewController.h"
 #import "ThreeViewController.h"
+
+#import "MJRefresh.h"
 @interface ViewController ()
 
 @end
@@ -26,7 +28,7 @@
     style.isScrollEnable = YES;
     style.isShowBottomLine = YES;
     style.isShowCover = YES;
-    
+    style.isNeedHeader = YES;
     CGRect pageViewFrame = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64);
     
     NSMutableArray *vcs = [NSMutableArray new];
@@ -57,9 +59,15 @@
     [vcs addObject:six];
     [vcs addObject:seven];
     [vcs addObject:eight];
-    
-    SeanPageView *page = [[SeanPageView alloc]initWithFrame:pageViewFrame style:style childVcs:vcs parentVc:self titles:titles];
+    UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 200)];
+    imageView.backgroundColor = [UIColor redColor];
+    SeanPageView *page = [[SeanPageView alloc]initWithFrame:pageViewFrame style:style childVcs:vcs parentVc:self titles:titles headerView:imageView];
     [self.view addSubview:page];
+    
+    
+    
+//    one.tableView.mj_header.frame = CGRectMake(0,200-56, self.view.frame.size.width, 56);
+//    [one.tableView.tableHeaderView addSubview:one.tableView.mj_header];
     
 }
 

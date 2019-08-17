@@ -35,6 +35,7 @@
     _coverMargin = 5;
     _coverH = 25;
     _coverRadius = 12;
+    _refreshHeight = 54.0;
 }
 
 

@@ -74,6 +74,7 @@
 }
 
 - (void)creatLabels{
+    self.currentIndex = 0;
     for (int i = 0; i<_titles.count; i++) {
         UILabel *label = [[UILabel alloc] init];
         NSString *title = _titles[i];
