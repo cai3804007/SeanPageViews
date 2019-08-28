@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SeanPageView : UIView
 -(instancetype)initWithFrame:(CGRect)frame style:(SeanPageViewStyle *)style childVcs:(NSArray<UIViewController<SeanPageViewDelegate> *>*)childVcs parentVc:(UIViewController *)parentVc titles:(NSArray *)titles headerView:(UIView *)headerView;
+- (void)reloadData;
 @end
 
 NS_ASSUME_NONNULL_END

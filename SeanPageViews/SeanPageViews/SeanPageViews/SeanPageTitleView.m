@@ -128,9 +128,16 @@
 
 - (void)setupBottomLine{
     [self.scrollView addSubview:self.bottomLine];
-    CGRect frame = self.titleLabels.firstObject.frame;
+    UILabel *label = self.titleLabels.firstObject;
+    CGRect frame = label.frame;
     frame.size.height = self.style.bottomLineH;
     frame.origin.y = self.bounds.size.height - self.style.bottomLineH;
+   
+    if (!self.style.isBottomLineFull) {
+         CGSize size = [label.text boundingRectWithSize:CGSizeMake(MAXFLOAT, 0) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:self.style.font} context:nil].size;
+        frame.size.width = size.width;
+        frame.origin.x = label.center.x - size.width/2.0;
+    }
     self.bottomLine.frame = frame;
 }
 
@@ -153,9 +160,14 @@
 }
 
 
-- (void)titleLabelClick:(UITapGestureRecognizer *)tap{
-       // 0.获取点击的label
-    UILabel *currentLabel = (UILabel *)[tap view];
+- (void)titleLabelClick:(id )tap{
+    UILabel *currentLabel = nil;
+    if ([tap isKindOfClass:[UITapGestureRecognizer class]]) {
+        // 0.获取点击的label
+        currentLabel = (UILabel *)[tap view];
+    }else if ([tap isKindOfClass:[UILabel class]]){
+        currentLabel = (UILabel *)tap;
+    }
       // 1.如果和之前是同一个 直接return
     if (self.currentIndex == currentLabel.tag) {return;}
      // 2.获取之前的label
@@ -176,12 +188,7 @@
     
     // 7.调整线的显示
     if (self.style.isShowBottomLine) {
-        CGRect frame = self.bottomLine.frame;
-        frame.origin.x = currentLabel.frame.origin.x;
-        frame.size.width = currentLabel.frame.size.width;
-        [UIView animateWithDuration:0.15 animations:^{
-            self.bottomLine.frame = frame;
-        }];
+        [self changeBottomLineFrameWithLabel:currentLabel];
     }
     
     // 8.调整比例
@@ -199,44 +206,73 @@
             self.coverView.center = currentLabel.center;
         }];
     }
-    
 }
+
+
+- (void)changeBottomLineFrameWithLabel:(UILabel *)currentLabel{
+    CGRect frame = self.bottomLine.frame;
+    frame.origin.x = currentLabel.frame.origin.x;
+    frame.size.width = currentLabel.frame.size.width;
+    if (self.style.isScrollEnable == NO) {
+        CGSize size = [currentLabel.text boundingRectWithSize:CGSizeMake(MAXFLOAT, 0) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:self.style.font} context:nil].size;
+        frame.size.width = size.width;
+        frame.origin.x = currentLabel.center.x - size.width/2.0;
+    }
+    [UIView animateWithDuration:0.15 animations:^{
+        self.bottomLine.frame = frame;
+    }];
+}
+
+
 
 - (void)setTitleWithProgress:(CGFloat)progress sourceIndex:(NSInteger)sourceIndex targetIndex:(NSInteger)targetIndex{
      // 1.取出sourceIndex和targetIndex
     UILabel *sourceLabel = self.titleLabels[sourceIndex];
     UILabel *targetLabel = self.titleLabels[targetIndex];
-    // 2.颜色的渐变
-    // 2.1 取出变化的范围
-    NSArray<NSNumber *> *colorDelta = [self getRGBDeltaWithFirstColor:self.style.selectedColor secondColor:self.style.normalColor];
- // 3.2 变化sourceLabel
-    sourceLabel.textColor = [[UIColor alloc]initWithRed:self.selectedRGB[0].floatValue - colorDelta[0].floatValue *progress green:self.selectedRGB[1].floatValue - colorDelta[1].floatValue *progress blue:self.selectedRGB[2].floatValue - colorDelta[2].floatValue *progress alpha:1.0];
-     // 3.2 变化targetIndex
-    targetLabel.textColor = [[UIColor alloc]initWithRed:self.normalRGB[0].floatValue + colorDelta[0].floatValue *progress green:self.normalRGB[1].floatValue + colorDelta[1].floatValue *progress blue:self.normalRGB[2].floatValue + colorDelta[2].floatValue *progress alpha:1.0];
-     // 4.记录最新的index
-    self.currentIndex = targetIndex;
-    
-    CGFloat moveTotalX = targetLabel.frame.origin.x - sourceLabel.frame.origin.x;
-    CGFloat moveTotalW = targetLabel.frame.size.width - sourceLabel.frame.size.width;
-    // 5.计算滚动范围差值
-    if (self.style.isShowBottomLine) {
-        CGRect bottomFrame = self.bottomLine.frame;
-        bottomFrame.size.width = sourceLabel.frame.size.width + moveTotalW * progress;
-        bottomFrame.origin.x = sourceLabel.frame.origin.x + moveTotalX * progress;
-        self.bottomLine.frame = bottomFrame;
-    }
-    // 6.放大的比例
-    if (self.style.isNeedScale) {
-        CGFloat scaleDelta = (self.style.scaleRange - 1.0) * progress;
-        sourceLabel.transform = CGAffineTransformMakeScale(self.style.scaleRange - scaleDelta * progress, self.style.scaleRange - scaleDelta * progress);
-        targetLabel.transform = CGAffineTransformMakeScale(1.0 + scaleDelta * progress, 1.0 + scaleDelta * progress);
-    }
-    // 7.计算遮盖物移动
-    if (self.style.isShowCover) {
-        CGRect coverFrame = self.coverView.frame;
-        coverFrame.size.width = self.style.isScrollEnable ? (sourceLabel.frame.size.width + 2 * self.style.coverMargin + moveTotalW * progress) : (sourceLabel.frame.size.width + moveTotalW * progress);
-        coverFrame.origin.x = self.style.isScrollEnable ? (sourceLabel.frame.origin.x - self.style.coverMargin + moveTotalX * progress) : (sourceLabel.frame.origin.x + moveTotalX * progress);
-        self.coverView.frame = coverFrame;
+    if (self.style.isNeedProgress) {
+        // 2.颜色的渐变
+        // 2.1 取出变化的范围
+        NSArray<NSNumber *> *colorDelta = [self getRGBDeltaWithFirstColor:self.style.selectedColor secondColor:self.style.normalColor];
+        // 3.2 变化sourceLabel
+        sourceLabel.textColor = [[UIColor alloc]initWithRed:self.selectedRGB[0].floatValue - colorDelta[0].floatValue *progress green:self.selectedRGB[1].floatValue - colorDelta[1].floatValue *progress blue:self.selectedRGB[2].floatValue - colorDelta[2].floatValue *progress alpha:1.0];
+        // 3.2 变化targetIndex
+        targetLabel.textColor = [[UIColor alloc]initWithRed:self.normalRGB[0].floatValue + colorDelta[0].floatValue *progress green:self.normalRGB[1].floatValue + colorDelta[1].floatValue *progress blue:self.normalRGB[2].floatValue + colorDelta[2].floatValue *progress alpha:1.0];
+        // 4.记录最新的index
+        self.currentIndex = targetIndex;
+        
+        CGFloat moveTotalX = targetLabel.frame.origin.x - sourceLabel.frame.origin.x;
+        CGFloat moveTotalW = targetLabel.frame.size.width - sourceLabel.frame.size.width;
+        // 5.计算滚动范围差值
+        if (self.style.isShowBottomLine) {
+            CGRect bottomFrame = self.bottomLine.frame;
+            bottomFrame.size.width = sourceLabel.frame.size.width + moveTotalW * progress;
+            bottomFrame.origin.x = sourceLabel.frame.origin.x + moveTotalX * progress;
+            if (!self.style.isBottomLineFull) {
+                if (progress >= 1.0) {
+                    [self changeBottomLineFrameWithLabel:targetLabel];
+                }
+            }else{
+                self.bottomLine.frame = bottomFrame;
+            }
+        }
+        // 6.放大的比例
+        if (self.style.isNeedScale) {
+            CGFloat scaleDelta = (self.style.scaleRange - 1.0) * progress;
+            sourceLabel.transform = CGAffineTransformMakeScale(self.style.scaleRange - scaleDelta * progress, self.style.scaleRange - scaleDelta * progress);
+            targetLabel.transform = CGAffineTransformMakeScale(1.0 + scaleDelta * progress, 1.0 + scaleDelta * progress);
+        }
+        // 7.计算遮盖物移动
+        if (self.style.isShowCover) {
+            CGRect coverFrame = self.coverView.frame;
+            coverFrame.size.width = self.style.isScrollEnable ? (sourceLabel.frame.size.width + 2 * self.style.coverMargin + moveTotalW * progress) : (sourceLabel.frame.size.width + moveTotalW * progress);
+            coverFrame.origin.x = self.style.isScrollEnable ? (sourceLabel.frame.origin.x - self.style.coverMargin + moveTotalX * progress) : (sourceLabel.frame.origin.x + moveTotalX * progress);
+            self.coverView.frame = coverFrame;
+        }
+    }else{
+        if (progress >= 1.0) {
+            UILabel *targetLabel = self.titleLabels[targetIndex];
+            [self  titleLabelClick:targetLabel];
+        }
     }
 }
 

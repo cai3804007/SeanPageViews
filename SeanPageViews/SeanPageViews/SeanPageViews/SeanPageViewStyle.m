@@ -36,6 +36,7 @@
     _coverH = 25;
     _coverRadius = 12;
     _refreshHeight = 54.0;
+    _isBottomLineFull = YES;
 }
 
 

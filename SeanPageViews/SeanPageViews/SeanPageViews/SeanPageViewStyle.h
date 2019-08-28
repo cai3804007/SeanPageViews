@@ -47,6 +47,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic,assign) CGFloat refreshHeight;
 
+/***下面滚动条是否铺满 false则和label一样宽 默认为yes***/
+@property (nonatomic,assign) BOOL isBottomLineFull;
+/***是否需要渐变***/
+@property (nonatomic,assign) BOOL isNeedProgress;
+
 @end
 
 NS_ASSUME_NONNULL_END
