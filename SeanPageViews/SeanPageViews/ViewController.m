@@ -69,6 +69,7 @@
     style.isShowBottomLine = YES;
     style.isNeedHeader = YES;
     style.isBottomLineFull = NO;
+    style.isBottomScrollView = YES;
     CGRect pageViewFrame = CGRectMake(0, 64, self.view.frame.size.width, self.view.frame.size.height - 64);
     NSMutableArray *vcs = [NSMutableArray new];
     OneViewController *one = [[OneViewController alloc]init];
@@ -83,6 +84,7 @@
 
     UIImageView *imageView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 200)];
     imageView.backgroundColor = [UIColor redColor];
+    imageView.userInteractionEnabled = YES;
     SeanPageView *page = [[SeanPageView alloc]initWithFrame:pageViewFrame style:style childVcs:vcs parentVc:self titles:titles headerView:imageView];
     [self.view addSubview:page];
     

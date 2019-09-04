@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 /***是否显示底部滚动条***/
 @property (nonatomic,assign) BOOL isShowBottomLine;
 /***底部滚动条的颜色***/
-@property (nonatomic,assign) UIColor *bottomLineColor;
+@property (nonatomic,strong) UIColor *bottomLineColor;
 /***底部滚动条的高度***/
 @property (nonatomic,assign) CGFloat bottomLineH;
 /***是否进行缩放***/
@@ -46,7 +46,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,assign) BOOL isNeedHeader;
 
 @property (nonatomic,assign) CGFloat refreshHeight;
-
+/***底部是否是scrollview***/
+@property (nonatomic,assign) BOOL isBottomScrollView;
 /***下面滚动条是否铺满 false则和label一样宽 默认为yes***/
 @property (nonatomic,assign) BOOL isBottomLineFull;
 /***是否需要渐变***/

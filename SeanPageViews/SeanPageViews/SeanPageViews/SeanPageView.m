@@ -42,10 +42,7 @@
 }
 
 - (void)configUI{
-//    UIScrollView *scrollView = [[UIScrollView alloc]initWithFrame:self.bounds];
-//    _contentScrollView = scrollView;
-//    scrollView.delegate = self;
-//    [self addSubview:scrollView];
+  
     
     CGRect titleFrame = CGRectMake(0, self.header.frame.size.height, self.frame.size.width, self.style.titleHeight);
     self.titleView = [[SeanPageTitleView alloc]initWithFrame:titleFrame titles:self.titles style:self.style];
@@ -54,10 +51,34 @@
     _currentIndex = _titleView.currentIndex;
     
     CGRect contentFrame = CGRectMake(0,0, self.bounds.size.width, self.bounds.size.height);
+    if (self.style.isNeedHeader && self.style.isBottomScrollView){
+        contentFrame = CGRectMake(0,0, self.bounds.size.width, self.bounds.size.height + self.header.frame.size.height);
+    }
+    
+    
+    
     self.pageContentView = [[SeanPageContentView alloc]initWithFrame:contentFrame childVcs:self.childVcs parentVc:self.parentVc];
     self.pageContentView.delegate = self;
     [self addSubview:self.pageContentView];
     [self addSubview:self.titleView];
+    if (self.style.isNeedHeader && self.style.isBottomScrollView) {
+        UIScrollView *scrollView = [[UIScrollView alloc]initWithFrame:self.bounds];
+        _contentScrollView = scrollView;
+        scrollView.delegate = self;
+        [self addSubview:scrollView];
+     
+        [scrollView addSubview:self.pageContentView];
+        [scrollView addSubview:self.titleView];
+        [scrollView addSubview:self.header];
+        scrollView.contentSize = CGSizeMake(0, scrollView.frame.size.height + self.header.frame.size.height);
+        for (UIViewController<SeanPageViewDelegate> *page in self.childVcs) {
+            UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.header.frame.size.height + self.style.titleHeight)];
+            page.listScrollView.tableHeaderView = header;
+        }
+        return;
+    }
+    
+    
     if (self.style.isNeedHeader) {
         [self addSubview:self.header];
         for (UIViewController<SeanPageViewDelegate> *page in self.childVcs) {
@@ -88,27 +109,6 @@
         }
     }
 }
-
-//- (void)changeClickItemTableViewLastContent{
-//    self.currentTableView  = ;
-//    for (UITableView *tableView in self.tableViews) {
-//
-//        if ( self.lastTableViewOffsetY>=0 &&  self.lastTableViewOffsetY<=136) {
-//
-//            tableView.contentOffset = CGPointMake(0,  self.lastTableViewOffsetY);
-//
-//        }else if(self.lastTableViewOffsetY < 0){
-//
-//            tableView.contentOffset = CGPointMake(0, 0);
-//
-//        }else if ( self.lastTableViewOffsetY > 136){
-//
-//            tableView.contentOffset = CGPointMake(0, 136);
-//        }
-//    }
-//}
-
-
 
 
 

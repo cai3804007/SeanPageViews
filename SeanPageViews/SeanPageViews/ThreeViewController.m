@@ -81,6 +81,10 @@
 - (void)listViewDidScrollCallback:(void (^)(UIScrollView *))callback {
     self.scrollCallback = callback;
 }
+-(void)viewWillLayoutSubviews{
+    [super viewWillLayoutSubviews];
+    self.tableView.frame = self.view.bounds;
+}
 /*
 #pragma mark - Navigation
 
